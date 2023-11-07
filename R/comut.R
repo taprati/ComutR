@@ -43,7 +43,7 @@ comut <-
     if (missing(text_annotation)) { text_annotation = "none" }
     if (missing(barplot_data)) { barplot_data = NULL }
     if (missing(ids)) {
-      message("No ids specified. Defaulting to all ids!")
+      # message("No ids specified. Defaulting to all ids!")
       # Default to the union of all ids given across all data
       bp_ids <- c()
       meta_ids <- c()

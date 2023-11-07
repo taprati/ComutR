@@ -4,6 +4,10 @@
 # ComutR
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/taprati/ComutR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/taprati/ComutR?branch=main)
 <!-- badges: end -->
 
 Create comut plots in R! Built on top of ComplexHeatmap
@@ -23,7 +27,8 @@ devtools::install_github("taprati/ComutR")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The most basic comut plot takes a maf type data frame and generates a
+heatmap:
 
 ``` r
 library(ComutR)
@@ -35,7 +40,6 @@ input_maf <- data.frame(
 )
 
 comut(data = input_maf)
-#> No ids specified. Defaulting to all ids!
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />

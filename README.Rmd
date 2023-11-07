@@ -16,6 +16,8 @@ knitr::opts_chunk$set(
 # ComutR
 
 <!-- badges: start -->
+[![R-CMD-check](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/taprati/ComutR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/taprati/ComutR?branch=main)
 <!-- badges: end -->
 
 Create comut plots in R!
@@ -33,7 +35,7 @@ devtools::install_github("taprati/ComutR")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+The most basic comut plot takes a maf type data frame and generates a heatmap:
 
 ```{r example, fig.width=8, fig.height=8}
 library(ComutR)
@@ -46,3 +48,4 @@ input_maf <- data.frame(
 
 comut(data = input_maf)
 ```
+
