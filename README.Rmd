@@ -35,7 +35,7 @@ devtools::install_github("taprati/ComutR")
 
 This is a basic example which shows you how to solve a common problem:
 
-```{r example}
+```{r example, fig.width=8, fig.height=8}
 library(ComutR)
 
 input_maf <- data.frame(
