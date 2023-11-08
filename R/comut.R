@@ -227,6 +227,8 @@ comut <-
           )
         )
         colnames(missing_meta) <- meta_cols
+      } else {
+        missing_meta <- NULL
       }
       annodata <- metadata %>%
         rbind(missing_meta) %>%
