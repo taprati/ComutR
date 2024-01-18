@@ -80,6 +80,7 @@ comut_plot <- comut(
   data = input_maf,
   metadata = meta,
   col_maps = color_maps,
+  id_order = c("1", "2", "3", "4"),
   barplot_data = barplot_data
 )
 comut_plot

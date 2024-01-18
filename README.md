@@ -43,3 +43,8 @@ comut(data = input_maf)
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
+
+For more complex examples and explanations of all of ComutR’s features,
+look at the vignette:
+
+[Using Comut](./vignettes/ComutR.html)

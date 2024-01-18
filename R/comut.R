@@ -9,6 +9,7 @@
 #' @param barplot_data named list of named lists. Each sub list should contain data, colors, and legend params for plots
 #' @param show_barcodes whether the sample ids should be shown in the plot
 #' @param ids optional vector of Tumor_Sample_Barcodes to show
+#' @param id_order optional vector with order of Tumor_Sample_Barcodes
 #'
 #' @return Comut Plot
 #' @export
@@ -33,11 +34,13 @@ comut <-
            text_annotation,
            barplot_data,
            show_barcodes,
+           id_order,
            ids) {
     # Parse parameters
     if (missing(data)) stop("data is required!")
     if (missing(metadata)) { metadata = NULL }
     if (missing(col_maps)) { col_maps = NULL }
+    if (missing(id_order)) { id_order = NULL }
     if (missing(features_of_interest)) { features_of_interest = NULL }
     if (missing(show_barcodes)) { show_barcodes = TRUE }
     if (missing(text_annotation)) { text_annotation = "none" }
@@ -105,7 +108,6 @@ comut <-
       dplyr::filter(Tumor_Sample_Barcode %in% ids) %>%
       dplyr::filter(Variant_Classification %in% names(variant_scheme)) %>% # Filter to relevant mutations
       dplyr::mutate(Variant_Classification = as.character(variant_scheme[.$Variant_Classification]))
-
 
     # Filter to features of interest if needed
     if (!is.null(features_of_interest)) {
@@ -205,6 +207,16 @@ comut <-
       t() %>%
       cbind(mutation_dummy_cols) %>%
       rbind(mutation_dummy_matrix)
+
+    # Adjust column order if desired
+    if (!is.null(id_order)) {
+      alteration_matrix <- alteration_matrix[ , id_order]
+      variant_matrix <- variant_matrix[ , id_order]
+      # Adjust text matrix on the fly
+      if (!is.null(text_matrix)) {
+        text_matrix <- text_matrix[ , id_order]
+      }
+    }
 
     # Get heatmap order
     heatmap_gene_order <- alteration_matrix %>%
@@ -352,6 +364,7 @@ comut <-
       row_names_gp = grid::gpar(fontsize = 10),
       row_names_side = "left",
       row_order = heatmap_gene_order,
+      column_order = id_order,
       col = c("white", "white"),
       cell_fun = function(j, i, x, y, width, height, fill) {
         if (alteration_matrix[i, j] != 0) {

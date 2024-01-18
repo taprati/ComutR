@@ -2,7 +2,7 @@
 title: "ComutR"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{using_comut}
+  %\VignetteIndexEntry{ComutR}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

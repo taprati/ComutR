@@ -12,6 +12,7 @@ comut(
   text_annotation,
   barplot_data,
   show_barcodes,
+  id_order,
   ids
 )
 }
@@ -29,6 +30,8 @@ comut(
 \item{barplot_data}{named list of named lists. Each sub list should contain data, colors, and legend params for plots}
 
 \item{show_barcodes}{whether the sample ids should be shown in the plot}
+
+\item{id_order}{optional vector with order of Tumor_Sample_Barcodes}
 
 \item{ids}{optional vector of Tumor_Sample_Barcodes to show}
 }

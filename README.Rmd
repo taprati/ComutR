@@ -49,3 +49,6 @@ input_maf <- data.frame(
 comut(data = input_maf)
 ```
 
+For more complex examples and explanations of all of ComutR's features, look at the vignette:
+
+[Using Comut](./vignettes/ComutR.html)

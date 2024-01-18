@@ -83,3 +83,14 @@ test_that("Comut plots generate", {
               barplot_data = barplot_data
             ), "Following annotation names are duplicated: value")
           })
+
+test_that("Comut plots reorder", {
+          expect_warning(
+            comut(
+              data = input_maf,
+              metadata = meta,
+              col_maps = color_maps,
+              id_order = c("1", "2", "3", "4"),
+              barplot_data = barplot_data
+            ), "Following annotation names are duplicated: value")
+          })
