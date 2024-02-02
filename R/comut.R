@@ -7,6 +7,7 @@
 #' @param features_of_interest optional vector of genes of interest
 #' @param text_annotation How to annotate comut plot squares if desired, must be a column in data
 #' @param barplot_data named list of named lists. Each sub list should contain data, colors, and legend params for plots
+#' @param grob whether to return grob object instead of plotting. Useful for other frameworks.
 #' @param show_barcodes whether the sample ids should be shown in the plot
 #' @param ids optional vector of Tumor_Sample_Barcodes to show
 #' @param id_order optional vector with order of Tumor_Sample_Barcodes
@@ -33,6 +34,7 @@ comut <-
            features_of_interest,
            text_annotation,
            barplot_data,
+           grob,
            show_barcodes,
            id_order,
            ids) {
@@ -41,6 +43,7 @@ comut <-
     if (missing(metadata)) { metadata = NULL }
     if (missing(col_maps)) { col_maps = NULL }
     if (missing(id_order)) { id_order = NULL }
+    if (missing(grob)) { grob = FALSE }
     if (missing(features_of_interest)) { features_of_interest = NULL }
     if (missing(show_barcodes)) { show_barcodes = TRUE }
     if (missing(text_annotation)) { text_annotation = "none" }
@@ -431,8 +434,14 @@ comut <-
       }
     )
 
-    ComplexHeatmap::draw(
-      comut,
-      annotation_legend_list = all_lgds
-    )
+    # Return grob object or draw plot
+    if (grob) {
+      p <- grid::grid.grabExpr(
+        ComplexHeatmap::draw(comut,
+                             annotation_legend_list = all_lgds))
+      return(p)
+    } else {
+      ComplexHeatmap::draw(comut,
+                           annotation_legend_list = all_lgds)
+    }
   }

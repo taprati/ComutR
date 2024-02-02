@@ -11,6 +11,7 @@ comut(
   features_of_interest,
   text_annotation,
   barplot_data,
+  grob,
   show_barcodes,
   id_order,
   ids
@@ -28,6 +29,8 @@ comut(
 \item{text_annotation}{How to annotate comut plot squares if desired, must be a column in data}
 
 \item{barplot_data}{named list of named lists. Each sub list should contain data, colors, and legend params for plots}
+
+\item{grob}{whether to return grob object instead of plotting. Useful for other frameworks.}
 
 \item{show_barcodes}{whether the sample ids should be shown in the plot}
 

@@ -81,6 +81,7 @@ comut_plot <- comut(
   metadata = meta,
   col_maps = color_maps,
   id_order = c("1", "2", "3", "4"),
+  grob = TRUE,
   barplot_data = barplot_data
 )
 comut_plot
