@@ -284,8 +284,8 @@ comut <-
           ComplexHeatmap::Legend(
             labels = names(col_maps[[feature]]),
             title = paste(feature),
-            grid_width = grid::unit(0.5, "cm"),
-            grid_height = grid::unit(0.5, "cm"),
+            # grid_width = grid::unit(0.5, "cm"),
+            # grid_height = grid::unit(0.5, "cm"),
             legend_gp = grid::gpar(fill = col_maps[[feature]], fontsize = 8)
           )
       }
@@ -313,13 +313,14 @@ comut <-
           bar_width = 1,
           border = FALSE,
           gp = grid::gpar(fill = barplot_data[[feature]][["colors"]][colnames(dat)],
-                    fontsize = 3,
+                    # fontsize = 3,
                     col = "white")
         ),
         annotation_label = paste(stringr::str_replace(feature, " ", "\n")),
         #annotation_label = paste(feature),
-        annotation_height = grid::unit(1, "inches"),
-        gp = grid::gpar(fontsize = 3, col = "white"),
+        annotation_name_gp = grid::gpar(fontsize = 6),
+        # annotation_height = grid::unit(1, "inches"),
+        # gp = grid::gpar(fontsize = 3, col = "white"),
         which = "column",
         annotation_name_side = "left",
         border = FALSE,
@@ -331,8 +332,8 @@ comut <-
         bar_lgd <- ComplexHeatmap::Legend(
           labels = names(barplot_data[[feature]][["colors"]]),
           title = paste(feature),
-          grid_width = grid::unit(0.5, "cm"),
-          grid_height = grid::unit(0.5, "cm"),
+          # grid_width = grid::unit(0.5, "cm"),
+          # grid_height = grid::unit(0.5, "cm"),
           legend_gp = grid::gpar(fill = barplot_data[[feature]][["colors"]],
                            fontsize = 10)
         )
@@ -341,16 +342,16 @@ comut <-
     }
     # Set height of top annotations depending on how many plots
     # Height of annotation is 1 inch + 0.75 per top plot
-    if (!is.null(all_annotations)) {
-      all_annotations@height = grid::unit(1 + (0.75 * length(barplot_data)), "inches")
-    }
+    # if (!is.null(all_annotations)) {
+    #   all_annotations@height = grid::unit(1 + (0.75 * length(barplot_data)), "inches")
+    # }
 
     # Add legend of alteration type
     all_lgds[["Alteration Type"]] <- ComplexHeatmap::Legend(
       labels = names(variant_colors),
       title = "Alteration Type",
-      grid_width = grid::unit(0.5, "cm"),
-      grid_height = grid::unit(0.5, "cm"),
+      # grid_width = grid::unit(0.5, "cm"),
+      # grid_height = grid::unit(0.5, "cm"),
       legend_gp = grid::gpar(fill = variant_colors, fontsize = 10)
     )
 
