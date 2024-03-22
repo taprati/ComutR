@@ -12,6 +12,7 @@ comut(
   text_annotation,
   barplot_data,
   grob,
+  add_borders,
   show_barcodes,
   id_order,
   ids
@@ -31,6 +32,8 @@ comut(
 \item{barplot_data}{named list of named lists. Each sub list should contain data, colors, and legend params for plots}
 
 \item{grob}{whether to return grob object instead of plotting. Useful for other frameworks.}
+
+\item{add_borders}{whether padding should be added around each box in the comut body.}
 
 \item{show_barcodes}{whether the sample ids should be shown in the plot}
 

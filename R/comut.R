@@ -8,6 +8,7 @@
 #' @param text_annotation How to annotate comut plot squares if desired, must be a column in data
 #' @param barplot_data named list of named lists. Each sub list should contain data, colors, and legend params for plots
 #' @param grob whether to return grob object instead of plotting. Useful for other frameworks.
+#' @param add_borders whether padding should be added around each box in the comut body.
 #' @param show_barcodes whether the sample ids should be shown in the plot
 #' @param ids optional vector of Tumor_Sample_Barcodes to show
 #' @param id_order optional vector with order of Tumor_Sample_Barcodes
@@ -35,6 +36,7 @@ comut <-
            text_annotation,
            barplot_data,
            grob,
+           add_borders,
            show_barcodes,
            id_order,
            ids) {
@@ -44,6 +46,7 @@ comut <-
     if (missing(col_maps)) { col_maps = NULL }
     if (missing(id_order)) { id_order = NULL }
     if (missing(grob)) { grob = FALSE }
+    if (missing(add_borders)) { add_borders = FALSE }
     if (missing(features_of_interest)) { features_of_interest = NULL }
     if (missing(show_barcodes)) { show_barcodes = TRUE }
     if (missing(text_annotation)) { text_annotation = "none" }
@@ -412,18 +415,20 @@ comut <-
               gp = grid::gpar(
                 col = "white",
                 fill = variant_colors["Multiple"],
-                lwd = 2
+                lwd = 1
               )
             )
           }
-          grid::grid.rect(x, y, width, height,
-            just = "center",
-            gp = grid::gpar(
-              col = "white",
-              lwd = 5,
-              fill = "transparent"
+          if (add_borders == TRUE) {
+            grid::grid.rect(x, y, width, height,
+              just = "center",
+              gp = grid::gpar(
+                col = "white",
+                lwd = 5,
+                fill = "transparent"
+              )
             )
-          )
+          }
           if (length(alteration) %in% c(1, 2)) {
             if (text_annotation != "none") {
               grid::grid.text(sprintf("%s", text_matrix[i, j]),
