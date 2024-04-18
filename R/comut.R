@@ -3,11 +3,15 @@
 #'
 #' @param data df with Tumor_Sample_Barcode, Hugo_Symbol, Variant_Classification, and optional column for text annotations
 #' @param metadata df with Tumor_Sample_Barcode, and metadata columns
+#' @param variant_colors colorscheme for alteration types, named list
+#' @param variant_scheme naming scheme to convert alteration types. If provided should match variant_colors names
 #' @param col_maps named list of color maps. Names should match columns of metadata
 #' @param features_of_interest optional vector of genes of interest
 #' @param text_annotation How to annotate comut plot squares if desired, must be a column in data
 #' @param barplot_data named list of named lists. Each sub list should contain data, colors, and legend params for plots
 #' @param grob whether to return grob object instead of plotting. Useful for other frameworks.
+#' @param body_width width of the heatmap body in inches. Defaults is 6
+#' @param body_height height of the heatmap body in inches. Default is 5
 #' @param add_borders whether padding should be added around each box in the comut body.
 #' @param show_barcodes whether the sample ids should be shown in the plot
 #' @param ids optional vector of Tumor_Sample_Barcodes to show
@@ -31,11 +35,15 @@
 comut <-
   function(data,
            metadata,
+           variant_colors,
+           variant_scheme,
            col_maps,
            features_of_interest,
            text_annotation,
            barplot_data,
            grob,
+           body_width = 6,
+           body_height = 5,
            add_borders,
            show_barcodes,
            id_order,
@@ -77,43 +85,58 @@ comut <-
             If col_map is defined, metadata should be provided!")
     } else {
       feats <- colnames(metadata)[colnames(metadata) != "Tumor_Sample_Barcode"]
-      #if (!setequal(feats, names(col_maps))) {
       if (!all(feats %in% names(col_maps))) {
         stop("Some metadata features are not in the color maps!")
       }
     }
-    # TODO: Check color schemes
-
-    # Specify variant naming and colors
-    variant_scheme <- c(
-      "Frame_Shift_Del" = "Frameshift Indel",
-      "Frame_Shift_Ins" = "Frameshift Indel",
-      "In_Frame_Del" = "In Frame Indel",
-      "In_Frame_Ins" = "In Frame Indel",
-      "Missense_Mutation" = "Missense",
-      "Nonsense_Mutation" = "Nonsense",
-      "Splice_Site" = "Splice Site",
-      "Translation_Start_Site" = "Start Site"
-    )
-    variant_colors <-  c(
-      "Nonsense" = "#E58606",
-      "In Frame Indel" = "#5D69B1",
-      #"#52BCA3",
-      #"#99C945",
-      "Frameshift Indel" = "#CC61B0",
-      "Missense" = "#24796C",
-      "Start Site" = "#DAA51B",
-      #"#2F8AC4",
-      #"#764E9F",
-      "Splice Site" = "#ED645A",
-      "Multiple" = "#A5AA99"
-    )
+    # Set variant color map and naming scheme depending on params
+    if (missing(variant_colors) & missing(variant_scheme)) {
+      variant_colors <-  c(
+        "Nonsense" = "#E58606",
+        "In Frame Indel" = "#5D69B1",
+        #"#52BCA3",
+        #"#99C945",
+        "Frameshift Indel" = "#CC61B0",
+        "Missense" = "#24796C",
+        "Start Site" = "#DAA51B",
+        #"#2F8AC4",
+        #"#764E9F",
+        "Splice Site" = "#ED645A",
+        "Multiple" = "#A5AA99"
+      )
+      # Specify variant naming and colors
+      variant_scheme <- c(
+        "Frame_Shift_Del" = "Frameshift Indel",
+        "Frame_Shift_Ins" = "Frameshift Indel",
+        "In_Frame_Del" = "In Frame Indel",
+        "In_Frame_Ins" = "In Frame Indel",
+        "Missense_Mutation" = "Missense",
+        "Nonsense_Mutation" = "Nonsense",
+        "Splice_Site" = "Splice Site",
+        "Translation_Start_Site" = "Start Site"
+      )
+    } else if (!missing(variant_colors) & missing(variant_scheme)) {
+      variant_colors <- variant_colors
+      variant_scheme <- NULL
+    } else if (missing(variant_colors) & !missing(variant_scheme)) {
+      stop("The variant_scheme needs variant_colors!")
+    } else {
+      # TODO: Check color schemes if provides are good
+      variant_colors <- variant_colors
+      variant_scheme <- variant_scheme
+    }
 
     # Filter the data to patients of interest, and format alterations
     filtered_data <- data %>%
-      dplyr::filter(Tumor_Sample_Barcode %in% ids) %>%
-      dplyr::filter(Variant_Classification %in% names(variant_scheme)) %>% # Filter to relevant mutations
-      dplyr::mutate(Variant_Classification = as.character(variant_scheme[.$Variant_Classification]))
+      dplyr::filter(Tumor_Sample_Barcode %in% ids)
+
+    # If variant scheme is needed, apply it
+    # (only when default or given, not when only colors given)
+    if (!is.null(variant_scheme)) {
+      filtered_data <- filtered_data %>%
+        dplyr::filter(Variant_Classification %in% names(variant_scheme)) %>%
+        dplyr::mutate(Variant_Classification = as.character(variant_scheme[.$Variant_Classification]))
+    }
 
     # Filter to features of interest if needed
     if (!is.null(features_of_interest)) {
@@ -365,8 +388,8 @@ comut <-
       show_column_dend = FALSE,
       show_column_names = show_barcodes,
       show_heatmap_legend = FALSE,
-      width = grid::unit(6, "inches"),
-      height = grid::unit(5, "inches"),
+      width = grid::unit(body_width, "inches"),
+      height = grid::unit(body_height, "inches"),
       column_names_gp = grid::gpar(fontsize = 10),
       row_names_gp = grid::gpar(fontsize = 10),
       row_names_side = "left",

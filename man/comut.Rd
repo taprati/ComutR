@@ -7,11 +7,15 @@
 comut(
   data,
   metadata,
+  variant_colors,
+  variant_scheme,
   col_maps,
   features_of_interest,
   text_annotation,
   barplot_data,
   grob,
+  body_width = 6,
+  body_height = 5,
   add_borders,
   show_barcodes,
   id_order,
@@ -23,6 +27,10 @@ comut(
 
 \item{metadata}{df with Tumor_Sample_Barcode, and metadata columns}
 
+\item{variant_colors}{colorscheme for alteration types, named list}
+
+\item{variant_scheme}{naming scheme to convert alteration types. If provided should match variant_colors names}
+
 \item{col_maps}{named list of color maps. Names should match columns of metadata}
 
 \item{features_of_interest}{optional vector of genes of interest}
@@ -32,6 +40,10 @@ comut(
 \item{barplot_data}{named list of named lists. Each sub list should contain data, colors, and legend params for plots}
 
 \item{grob}{whether to return grob object instead of plotting. Useful for other frameworks.}
+
+\item{body_width}{width of the heatmap body in inches. Defaults is 6}
+
+\item{body_height}{height of the heatmap body in inches. Default is 5}
 
 \item{add_borders}{whether padding should be added around each box in the comut body.}
 

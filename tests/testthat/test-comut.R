@@ -102,6 +102,8 @@ test_that("Comut plots reorder", {
               metadata = meta,
               col_maps = color_maps,
               id_order = c("1", "2", "3", "4"),
+              body_width = 4,
+              body_height = 3,
               show_barcodes = FALSE,
               add_borders = TRUE,
               barplot_data = barplot_data
