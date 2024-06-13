@@ -9,15 +9,16 @@ comut(
   metadata,
   variant_colors,
   variant_scheme,
+  show_variant_legend = TRUE,
   col_maps,
   features_of_interest,
   text_annotation,
   barplot_data,
-  grob,
+  grob = FALSE,
   body_width = 6,
   body_height = 5,
-  add_borders,
-  show_barcodes,
+  add_borders = FALSE,
+  show_barcodes = TRUE,
   id_order,
   ids
 )
@@ -30,6 +31,8 @@ comut(
 \item{variant_colors}{colorscheme for alteration types, named list}
 
 \item{variant_scheme}{naming scheme to convert alteration types. If provided should match variant_colors names}
+
+\item{show_variant_legend}{whether the legend of variant types should be include. Default is TRUE.}
 
 \item{col_maps}{named list of color maps. Names should match columns of metadata}
 

@@ -5,6 +5,7 @@
 #' @param metadata df with Tumor_Sample_Barcode, and metadata columns
 #' @param variant_colors colorscheme for alteration types, named list
 #' @param variant_scheme naming scheme to convert alteration types. If provided should match variant_colors names
+#' @param show_variant_legend whether the legend of variant types should be include. Default is TRUE.
 #' @param col_maps named list of color maps. Names should match columns of metadata
 #' @param features_of_interest optional vector of genes of interest
 #' @param text_annotation How to annotate comut plot squares if desired, must be a column in data
@@ -37,15 +38,16 @@ comut <-
            metadata,
            variant_colors,
            variant_scheme,
+           show_variant_legend = TRUE,
            col_maps,
            features_of_interest,
            text_annotation,
            barplot_data,
-           grob,
+           grob = FALSE,
            body_width = 6,
            body_height = 5,
-           add_borders,
-           show_barcodes,
+           add_borders = FALSE,
+           show_barcodes = TRUE,
            id_order,
            ids) {
     # Parse parameters
@@ -53,10 +55,11 @@ comut <-
     if (missing(metadata)) { metadata = NULL }
     if (missing(col_maps)) { col_maps = NULL }
     if (missing(id_order)) { id_order = NULL }
-    if (missing(grob)) { grob = FALSE }
-    if (missing(add_borders)) { add_borders = FALSE }
+    # if (missing(grob)) { grob = FALSE }
+    # if (missing(add_borders)) { add_borders = FALSE }
+    # if (missing(show_variant_legend)) { show_variant_legend = TRUE }
+    # if (missing(show_barcodes)) { show_barcodes = TRUE }
     if (missing(features_of_interest)) { features_of_interest = NULL }
-    if (missing(show_barcodes)) { show_barcodes = TRUE }
     if (missing(text_annotation)) { text_annotation = "none" }
     if (missing(barplot_data)) { barplot_data = NULL }
     if (missing(ids)) {
@@ -372,14 +375,16 @@ comut <-
       all_annotations@height = grid::unit(1 + (0.75 * length(barplot_data)), "inches")
     }
 
-    # Add legend of alteration type
-    all_lgds[["Alteration Type"]] <- ComplexHeatmap::Legend(
-      labels = names(variant_colors),
-      title = "Alteration Type",
-      grid_width = grid::unit(0.5, "cm"),
-      grid_height = grid::unit(0.5, "cm"),
-      legend_gp = grid::gpar(fill = variant_colors, fontsize = 10)
-    )
+    # Add legend of alteration type if desired
+    if (show_variant_legend) {
+      all_lgds[["Alteration Type"]] <- ComplexHeatmap::Legend(
+        labels = names(variant_colors),
+        title = "Alteration Type",
+        grid_width = grid::unit(0.5, "cm"),
+        grid_height = grid::unit(0.5, "cm"),
+        legend_gp = grid::gpar(fill = variant_colors, fontsize = 10)
+      )
+    }
 
     # Create heatmap
     comut <- ComplexHeatmap::Heatmap(

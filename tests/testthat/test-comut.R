@@ -101,6 +101,7 @@ test_that("Comut plots reorder", {
               data = input_maf,
               metadata = meta,
               col_maps = color_maps,
+              show_variant_legend = FALSE,
               id_order = c("1", "2", "3", "4"),
               body_width = 4,
               body_height = 3,
