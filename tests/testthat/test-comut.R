@@ -80,6 +80,11 @@ test_that("Comut plots generate", {
               data = input_maf,
               metadata = meta,
               col_maps = color_maps,
+              legend_side = "top",
+              legend_fontsize = 12,
+              anno_fontsize = 7,
+              cell_height = 0.5,
+              cell_width = 0.25,
               barplot_data = barplot_data
             ), "Following annotation names are duplicated: value")
           })

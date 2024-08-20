@@ -11,8 +11,13 @@
 #' @param text_annotation How to annotate comut plot squares if desired, must be a column in data
 #' @param barplot_data named list of named lists. Each sub list should contain data, colors, and legend params for plots
 #' @param grob whether to return grob object instead of plotting. Useful for other frameworks.
-#' @param body_width width of the heatmap body in inches. Defaults is 6
-#' @param body_height height of the heatmap body in inches. Default is 5
+#' @param body_width width of the heatmap body in inches.
+#' @param body_height height of the heatmap body in inches.
+#' @param cell_width width of the heatmap cells.
+#' @param cell_height height of the heatmap cells. Also applies to annotations.
+#' @param legend_side side of heatmap to put the legend on. Default is right
+#' @param legend_fontsize Font size for legends. Default is 10
+#' @param anno_fontsize Font size for annotations. Default is 8
 #' @param add_borders whether padding should be added around each box in the comut body.
 #' @param show_barcodes whether the sample ids should be shown in the plot
 #' @param ids optional vector of Tumor_Sample_Barcodes to show
@@ -44,8 +49,13 @@ comut <-
            text_annotation,
            barplot_data,
            grob = FALSE,
-           body_width = 6,
-           body_height = 5,
+           body_width,
+           body_height,
+           cell_height = 0.25,
+           cell_width = 0.25,
+           legend_side = "right",
+           legend_fontsize = 10,
+           anno_fontsize = 8,
            add_borders = FALSE,
            show_barcodes = TRUE,
            id_order,
@@ -55,10 +65,8 @@ comut <-
     if (missing(metadata)) { metadata = NULL }
     if (missing(col_maps)) { col_maps = NULL }
     if (missing(id_order)) { id_order = NULL }
-    # if (missing(grob)) { grob = FALSE }
-    # if (missing(add_borders)) { add_borders = FALSE }
-    # if (missing(show_variant_legend)) { show_variant_legend = TRUE }
-    # if (missing(show_barcodes)) { show_barcodes = TRUE }
+    if (missing(body_width)) { body_width = NULL }
+    if (missing(body_height)) { body_height = NULL }
     if (missing(features_of_interest)) { features_of_interest = NULL }
     if (missing(text_annotation)) { text_annotation = "none" }
     if (missing(barplot_data)) { barplot_data = NULL }
@@ -97,13 +105,9 @@ comut <-
       variant_colors <-  c(
         "Nonsense" = "#E58606",
         "In Frame Indel" = "#5D69B1",
-        #"#52BCA3",
-        #"#99C945",
         "Frameshift Indel" = "#CC61B0",
         "Missense" = "#24796C",
         "Start Site" = "#DAA51B",
-        #"#2F8AC4",
-        #"#764E9F",
         "Splice Site" = "#ED645A",
         "Multiple" = "#A5AA99"
       )
@@ -295,10 +299,12 @@ comut <-
       meta_anno <-
         ComplexHeatmap::HeatmapAnnotation(
           df = annodata,
-          gp = grid::gpar(fontsize = 7, col = "white"),
+          gp = grid::gpar(fontsize = anno_fontsize, col = "white", lwd = 1),
           which = "column",
           col = col_maps,
           annotation_name_side = "left",
+          annotation_name_gp = grid::gpar(fontsize = anno_fontsize),
+          simple_anno_size = grid::unit(cell_height, "inches"),
           border = FALSE,
           gap = grid::unit(2, "points"),
           show_legend = FALSE
@@ -315,7 +321,11 @@ comut <-
             title = paste(feature),
             grid_width = grid::unit(0.5, "cm"),
             grid_height = grid::unit(0.5, "cm"),
-            legend_gp = grid::gpar(fill = col_maps[[feature]], fontsize = 8)
+            legend_gp = grid::gpar(fill = col_maps[[feature]], fontsize = legend_fontsize),
+            labels_gp = grid::gpar(fill = variant_colors,
+                                   fontsize = legend_fontsize),
+            title_gp = grid::gpar(fill = variant_colors,
+                                  fontsize = legend_fontsize, fontface = "bold")
           )
       }
     } else { # If not metadata is given
@@ -342,20 +352,21 @@ comut <-
           bar_width = 1,
           border = FALSE,
           gp = grid::gpar(fill = barplot_data[[feature]][["colors"]][colnames(dat)],
-                    # fontsize = 3,
+                    fontsize = anno_fontsize,
                     col = "white")
         ),
+        # Split multi-word labels across lines
         annotation_label = paste(stringr::str_replace(feature, " ", "\n")),
-        # annotation_label = paste(feature),
-        annotation_name_gp = grid::gpar(fontsize = 6),
-        annotation_height = grid::unit(1, "inches"),
-        gp = grid::gpar(fontsize = 3, col = "white"),
+        annotation_name_gp = grid::gpar(fontsize = anno_fontsize),
+        annotation_height = grid::unit(0.75, "inches"),
+        gp = grid::gpar(fontsize = anno_fontsize, col = "white"),
         which = "column",
         annotation_name_side = "left",
         border = FALSE,
         gap = grid::unit(2, "points"),
         show_legend = FALSE
       )
+      # Add barplots to annotation list
       all_annotations <- c(bar_anno, all_annotations)
       if (barplot_data[[feature]][["legend"]]) {
         bar_lgd <- ComplexHeatmap::Legend(
@@ -364,15 +375,14 @@ comut <-
           grid_width = grid::unit(0.5, "cm"),
           grid_height = grid::unit(0.5, "cm"),
           legend_gp = grid::gpar(fill = barplot_data[[feature]][["colors"]],
-                           fontsize = 10)
+                           fontsize = legend_fontsize),
+          labels_gp = grid::gpar(fill = variant_colors,
+                                 fontsize = legend_fontsize),
+          title_gp = grid::gpar(fill = variant_colors,
+                                fontsize = legend_fontsize, fontface = "bold")
         )
         all_lgds[[feature]] <- bar_lgd
       }
-    }
-    # Set height of top annotations depending on how many plots
-    # Height of annotation is 1 inch + 0.75 per top plot
-    if (!is.null(all_annotations)) {
-      all_annotations@height = grid::unit(1 + (0.75 * length(barplot_data)), "inches")
     }
 
     # Add legend of alteration type if desired
@@ -382,8 +392,19 @@ comut <-
         title = "Alteration Type",
         grid_width = grid::unit(0.5, "cm"),
         grid_height = grid::unit(0.5, "cm"),
-        legend_gp = grid::gpar(fill = variant_colors, fontsize = 10)
+        legend_gp = grid::gpar(fill = variant_colors, fontsize = legend_fontsize),
+        labels_gp = grid::gpar(fill = variant_colors, fontsize = legend_fontsize),
+        title_gp = grid::gpar(fill = variant_colors, fontsize = legend_fontsize, fontface = "bold")
       )
+    }
+    # Define cell dimensions
+    # Set so cell height is the same as annotation heights by default
+    if (is.null(body_width) & is.null(body_height)) {
+      body_width = ncol(alteration_matrix) * grid::unit(cell_width, "inches")
+      body_height = nrow(alteration_matrix) * grid::unit(cell_height, "inches")
+    } else {
+      body_width = grid::unit(body_width, "inches")
+      body_height = grid::unit(body_height, "inches")
     }
 
     # Create heatmap
@@ -391,10 +412,10 @@ comut <-
       matrix = alteration_matrix,
       top_annotation = all_annotations,
       show_column_dend = FALSE,
-      show_column_names = show_barcodes,
       show_heatmap_legend = FALSE,
-      width = grid::unit(body_width, "inches"),
-      height = grid::unit(body_height, "inches"),
+      show_column_names = show_barcodes,
+      width = body_width,
+      height = body_height,
       column_names_gp = grid::gpar(fontsize = 10),
       row_names_gp = grid::gpar(fontsize = 10),
       row_names_side = "left",
@@ -472,10 +493,12 @@ comut <-
     if (grob) {
       p <- grid::grid.grabExpr(
         ComplexHeatmap::draw(comut,
+                             annotation_legend_side = legend_side,
                              annotation_legend_list = all_lgds))
       return(p)
     } else {
       ComplexHeatmap::draw(comut,
+                           annotation_legend_side = legend_side,
                            annotation_legend_list = all_lgds)
     }
   }

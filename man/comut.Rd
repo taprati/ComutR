@@ -15,8 +15,13 @@ comut(
   text_annotation,
   barplot_data,
   grob = FALSE,
-  body_width = 6,
-  body_height = 5,
+  body_width,
+  body_height,
+  cell_height = 0.25,
+  cell_width = 0.25,
+  legend_side = "right",
+  legend_fontsize = 10,
+  anno_fontsize = 8,
   add_borders = FALSE,
   show_barcodes = TRUE,
   id_order,
@@ -44,9 +49,19 @@ comut(
 
 \item{grob}{whether to return grob object instead of plotting. Useful for other frameworks.}
 
-\item{body_width}{width of the heatmap body in inches. Defaults is 6}
+\item{body_width}{width of the heatmap body in inches.}
 
-\item{body_height}{height of the heatmap body in inches. Default is 5}
+\item{body_height}{height of the heatmap body in inches.}
+
+\item{cell_height}{height of the heatmap cells. Also applies to annotations.}
+
+\item{cell_width}{width of the heatmap cells.}
+
+\item{legend_side}{side of heatmap to put the legend on. Default is right}
+
+\item{legend_fontsize}{Font size for legends. Default is 10}
+
+\item{anno_fontsize}{Font size for annotations. Default is 8}
 
 \item{add_borders}{whether padding should be added around each box in the comut body.}
 
