@@ -9,6 +9,8 @@
 #' @param col_maps named list of color maps. Names should match columns of metadata
 #' @param features_of_interest optional vector of genes of interest
 #' @param text_annotation How to annotate comut plot squares if desired, must be a column in data
+#' @param text_annotation_col Size of text annotations, default is 8.
+#' @param text_annotation_size Color of text annotations, default is white.
 #' @param barplot_data named list of named lists. Each sub list should contain data, colors, and legend params for plots
 #' @param grob whether to return grob object instead of plotting. Useful for other frameworks.
 #' @param body_width width of the heatmap body in inches.
@@ -47,6 +49,8 @@ comut <-
            col_maps,
            features_of_interest,
            text_annotation,
+           text_annotation_col = "white",
+           text_annotation_size = 8,
            barplot_data,
            grob = FALSE,
            body_width,
@@ -482,7 +486,8 @@ comut <-
             if (text_annotation != "none") {
               grid::grid.text(sprintf("%s", text_matrix[i, j]),
                         x, y,
-                        gp = grid::gpar(fontsize = 8, color = "white"))
+                        gp = grid::gpar(fontsize = text_annotation_size,
+                                        col = text_annotation_col))
             }
           }
         }

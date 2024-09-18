@@ -13,6 +13,8 @@ comut(
   col_maps,
   features_of_interest,
   text_annotation,
+  text_annotation_col = "white",
+  text_annotation_size = 8,
   barplot_data,
   grob = FALSE,
   body_width,
@@ -44,6 +46,10 @@ comut(
 \item{features_of_interest}{optional vector of genes of interest}
 
 \item{text_annotation}{How to annotate comut plot squares if desired, must be a column in data}
+
+\item{text_annotation_col}{Size of text annotations, default is 8.}
+
+\item{text_annotation_size}{Color of text annotations, default is white.}
 
 \item{barplot_data}{named list of named lists. Each sub list should contain data, colors, and legend params for plots}
 
