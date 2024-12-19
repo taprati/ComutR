@@ -15,6 +15,7 @@
 #' @param grob whether to return grob object instead of plotting. Useful for other frameworks.
 #' @param body_width width of the heatmap body in inches.
 #' @param body_height height of the heatmap body in inches.
+#' @param body_border boolean to add border to comut body.
 #' @param cell_width width of the heatmap cells.
 #' @param cell_height height of the heatmap cells. Also applies to annotations.
 #' @param legend_side side of heatmap to put the legend on. Default is right
@@ -55,6 +56,7 @@ comut <-
            grob = FALSE,
            body_width,
            body_height,
+           body_border = FALSE,
            cell_height = 0.25,
            cell_width = 0.25,
            legend_side = "right",
@@ -420,6 +422,7 @@ comut <-
       show_column_names = show_barcodes,
       width = body_width,
       height = body_height,
+      border = body_border,
       column_names_gp = grid::gpar(fontsize = 10),
       row_names_gp = grid::gpar(fontsize = 10),
       row_names_side = "left",

@@ -19,6 +19,7 @@ comut(
   grob = FALSE,
   body_width,
   body_height,
+  body_border = FALSE,
   cell_height = 0.25,
   cell_width = 0.25,
   legend_side = "right",
@@ -58,6 +59,8 @@ comut(
 \item{body_width}{width of the heatmap body in inches.}
 
 \item{body_height}{height of the heatmap body in inches.}
+
+\item{body_border}{boolean to add border to comut body.}
 
 \item{cell_height}{height of the heatmap cells. Also applies to annotations.}
 
