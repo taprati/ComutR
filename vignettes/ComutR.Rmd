@@ -9,31 +9,10 @@ vignette: >
 
 ```{r setup}
 library(ComutR)
-```
-
-# Basic Comut plots
-
-```{r basic comut, fig.width=8, fig.height=8}
-input_maf <- data.frame(
-  Tumor_Sample_Barcode = c("1", "1", "1", "2", "3", "4", "4"),
-  Hugo_Symbol = c("A", "B", "C", "C", "A", "A", "B"),
-  Variant_Classification = c("Missense_Mutation", "Nonsense_Mutation", "In_Frame_Del", "In_Frame_Del", "Missense_Mutation", "Nonsense_Mutation", "Nonsense_Mutation")
-)
-
-comut(data = input_maf)
+set.seed(1999)
 ```
 
 # Preparing data for comut plots
-
-```{r}
-dat <- tibble::tribble(
-  ~ID, ~GeneA, ~GeneB, ~GeneC,
-  1, 1, 1, 1,
-  2, 0, 0, 0,
-  3, 1, 0, 0,
-  4, 1, 1, 0
-)
-```
 
 The main input to comut is a dataframe with columns found in a typical maf file. Three columns are required by comut:
 
@@ -41,26 +20,38 @@ The main input to comut is a dataframe with columns found in a typical maf file.
 - Hugo_Symbol
 - Variant_Classification
 
-```{r}
-input_data <- tibble::tribble(
-  ~Tumor_Sample_Barcode, ~Hugo_Symbol, ~Variant_Classification,
-  "1", "A", "Missense_Mutation",
-  "1", "B", "Nonsense_Mutation",
-  "1", "C", "In_Frame_Del",
-  "2", "C", "In_Frame_Del",
-  "3", "A", "Missense_Mutation",
-  "4", "A", "Nonsense_Mutation",
-  "4", "B", "Nonsense_Mutation"
-  )
-```
-
-
-```{r fig.width=8, fig.height=8}
-comut(data = input_data)
-```
-
-
 For more information on the maf format and column names, visit [maf format](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
+
+## Generating mock data
+
+```{r Creating data}
+sample_ids <- as.character(1:10)
+
+gene_names <- c("A", "B", "C", "D", "E", "F", "G", "H")
+gene_names <- paste0("gene_", gene_names)
+
+variant_types = c("Missense_Mutation", "Nonsense_Mutation", "In_Frame_Del", "In_Frame_Del", "Missense_Mutation", "Nonsense_Mutation", "Nonsense_Mutation")
+
+maf <- expand.grid(
+  "Tumor_Sample_Barcode" = sample_ids,
+  "Hugo_Symbol" = gene_names
+  )
+maf$Variant_Classification <- sample(variant_types,
+                                     size = nrow(maf), replace = TRUE)
+# "Variant_Classification" = variant_types
+input_maf <- maf %>%
+  dplyr::sample_frac(0.35)
+
+input_maf %>% head()
+```
+
+# Basic Comut plots
+
+```{r basic comut, fig.width = 5, fig.height = 5}
+comut(data = input_maf)
+```
+
+By default, comutR provides a colorscheme for the variant classification, but this can be altered using the `variant_colors` and `variant_scheme` arguments.
 
 # Adding metadata
 
@@ -71,16 +62,12 @@ Along with metadata, you must pass the col_maps argument, which contains a named
 Here we have gender and biopsy site information for each sample, and we define color maps for the variables accordingly:
 
 ```{r}
-meta <- tibble::tribble(
-  ~Tumor_Sample_Barcode, ~Gender, ~Biopsy,
-  "1", "Male", "Primary",
-  "2", "Female", "Metastasis",
-  "3", "Male", "Metastasis",
-  #"4", "Female", "Primary"
-)
+meta <- data.frame("Tumor_Sample_Barcode" = sample_ids)
+meta$biopsy <- sample(c("Primary", "Metastasis"), size = nrow(meta), replace = TRUE)
+meta$sex <- sample(c("Male", "Female"), size = nrow(meta), replace = TRUE)
 
 # Define color mapping
-gender_colors <- c(
+sex_colors <- c(
   "Male" = "lightblue",
   "Female" = "pink"
 )
@@ -89,39 +76,32 @@ biopsy_type_colors <- c(
   "Metastasis" = "maroon"
 )
 color_maps <- list(
-  "Gender" = gender_colors,
-  "Biopsy" = biopsy_type_colors
+  "sex" = sex_colors,
+  "biopsy" = biopsy_type_colors
 )
 ```
 
 Note that patients without metadata will be colored grey.
 
-```{r fig.width=8, fig.height=8}
-comut(data = input_data, metadata = meta, col_maps = color_maps)
+```{r Adding metadata, fig.width = 5, fig.height = 5}
+comut(data = input_maf, metadata = meta, col_maps = color_maps)
 ```
 
 # Adding Barplots
 
-Barplot data is formatted in a similar manner to metadata. A column for Tumor_Sample_Barcode is required, and then columns for the barplot values. If a stacked barplot is desired (for mutation signatures for example) then there should be multiple columns corresponding to the proportion of each value.
+Barplot data is formatted in a similar manner to metadata. A column for `Tumor_Sample_Barcode` is required, and then columns for the barplot values. If a stacked barplot is desired (for mutation signatures for example) then there should be multiple columns corresponding to the proportion of each value.
 
 Barplots are defined within a named list of named lists. The top level name of each sublist is used as the y-axis label for the barplot. Each sublist should contain "data" containing the barplot data, "colors" containing a color map for the barplot, and "legend" a boolean for whether a legend should be created.
 
-```{r}
-signatures <- tibble::tribble(
-  ~Tumor_Sample_Barcode, ~Aging, ~Other,
-  "1", 0.5, 0.5,
-  "2", 0.25, 0.75,
-  "3", 0.75, 0.25,
-  "4", 1, 0
-)
+Note: The order of the barplot data list is the reverse of the order in which they are displayed in the plot!
 
-total_snp_data <- tibble::tribble(
-  ~Tumor_Sample_Barcode, ~n_snps,
-  "1", 10,
-  "2", 4,
-  "3", 2,
-  "4", 7
-)
+```{r}
+signatures <- data.frame("Tumor_Sample_Barcode" = sample_ids)
+signatures$Aging <- runif(nrow(meta), min = 0, max = 1)
+signatures$Other <- 1 - signatures$Aging
+
+total_snp_data <- data.frame("Tumor_Sample_Barcode" = sample_ids)
+total_snp_data$n_snps <- sample(1:20, size = nrow(meta), replace = TRUE)
 
 signature_colors <- c(
   "Aging" = "coral1",
@@ -129,7 +109,6 @@ signature_colors <- c(
 )
 
 # Barplot specifications
-# Note: the order of the list is reverse of the order in the plot!
 barplot_data <- list(
   "Mutation Signatures" = list(
     "data" = signatures,
@@ -144,7 +123,7 @@ barplot_data <- list(
 )
 ```
 
-```{r fig.width=10, fig.height=10}
+```{r fig.width = 5, fig.height = 5}
 comut(
   data = input_maf,
   barplot_data = barplot_data
@@ -153,7 +132,7 @@ comut(
 
 Putting all of the components together, we get something like this:
 
-```{r fig.width=10, fig.height=10}
+```{r fig.width = 5, fig.height = 5}
 comut(
   data = input_maf,
   metadata = meta,
@@ -166,43 +145,40 @@ comut(
 
 ComutR allows the user to add arbitrary text annotations to the cells of the comut plot. This can be specified as a column name that appears in the input data. Here we show adding allele fraction annotations to each mutation:
 
-```{r fig.width=8, fig.height=8}
-input_data <- tibble::tribble(
-  ~Tumor_Sample_Barcode, ~Hugo_Symbol, ~Variant_Classification, ~Allele_Fraction,
-  "1", "A", "Missense_Mutation", 0.5,
-  "1", "B", "Nonsense_Mutation", 0.25,
-  "1", "C", "In_Frame_Del", 0.75,
-  "2", "C", "In_Frame_Del", 0.6,
-  "3", "A", "Missense_Mutation", 0.5,
-  "4", "A", "Nonsense_Mutation", 0.35,
-  "4", "B", "Nonsense_Mutation", 0.8
-  )
+```{r fig.width = 5, fig.height = 5}
+input_maf$Allele_Fraction <- round(runif(nrow(input_maf), min = 0.1, max = 1), 1)
 
 comut(
-  data = input_data,
+  data = input_maf,
   text_annotation = "Allele_Fraction"
   )
 ```
 
 # Limiting samples or features
 
-If a subset of samples or features in the input data are desired, the user can specify the ids or features_of_interest arguments respectively.
+If a subset of samples or features in the input data are desired, the user can specify the `ids` or `features_of_interest` arguments respectively.
 
-```{r fig.width=8, fig.height=8}
-input_data <- tibble::tribble(
-  ~Tumor_Sample_Barcode, ~Hugo_Symbol, ~Variant_Classification,
-  "1", "A", "Missense_Mutation",
-  "1", "B", "Nonsense_Mutation",
-  "1", "C", "In_Frame_Del",
-  "2", "C", "In_Frame_Del",
-  "3", "A", "Missense_Mutation",
-  "4", "A", "Nonsense_Mutation",
-  "4", "B", "Nonsense_Mutation"
-  )
-
+```{r fig.width = 5, fig.height = 5}
 comut(
-  data = input_data,
-  ids = c("1", "3", "4"),
-  features_of_interest = c("A", "B")
+  data = input_maf,
+  ids = c("1", "3", "4", "7"),
+  features_of_interest = c("gene_A", "gene_B", "gene_E", "gene_H")
   )
+```
+
+# Comut also provide many arguments for the plot size, fontsize, and other options.
+
+```{r, fig.width = 10, fig.height = 7}
+comut(
+  data = input_maf,
+  metadata = meta,
+  col_maps = color_maps,
+  barplot_data = barplot_data,
+  text_annotation = "Allele_Fraction",
+  cell_width = 0.5,
+  cell_height = 0.3,
+  anno_fontsize = 12,
+  legend_fontsize = 12,
+  add_borders = TRUE
+)
 ```
