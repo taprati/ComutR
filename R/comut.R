@@ -25,6 +25,7 @@
 #' @param show_barcodes whether the sample ids should be shown in the plot
 #' @param ids optional vector of Tumor_Sample_Barcodes to show
 #' @param id_order optional vector with order of Tumor_Sample_Barcodes
+#' @param ... variable arguments to pass to Heatmap call
 #'
 #' @return Comut Plot
 #' @export
@@ -65,7 +66,7 @@ comut <-
            add_borders = FALSE,
            show_barcodes = TRUE,
            id_order,
-           ids) {
+           ids, ...) {
     # Parse parameters
     if (missing(data)) stop("data is required!")
     if (missing(metadata)) { metadata = NULL }
@@ -369,7 +370,6 @@ comut <-
         which = "column",
         annotation_name_side = "left",
         border = FALSE,
-        gap = grid::unit(2, "points"),
         show_legend = FALSE
       )
       # Add barplots to annotation list
@@ -494,7 +494,8 @@ comut <-
             }
           }
         }
-      }
+      },
+      ...
     )
 
     # Return grob object or draw plot

@@ -28,7 +28,8 @@ comut(
   add_borders = FALSE,
   show_barcodes = TRUE,
   id_order,
-  ids
+  ids,
+  ...
 )
 }
 \arguments{
@@ -79,6 +80,8 @@ comut(
 \item{id_order}{optional vector with order of Tumor_Sample_Barcodes}
 
 \item{ids}{optional vector of Tumor_Sample_Barcodes to show}
+
+\item{...}{variable arguments to pass to Heatmap call}
 }
 \value{
 Comut Plot

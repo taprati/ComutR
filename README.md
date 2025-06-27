@@ -15,6 +15,14 @@ Create comut plots in R! Built on top of ComplexHeatmap
 Heavily inspired by the python package comut:
 [comut](https://pypi.org/project/comut/)
 
+Major features include:
+
+- By default in works with [MAF (Mutation Annotation
+  Format)](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/)
+  style input data!
+- Ability to add text annotations on top of the boxes
+- Allows for missing information to be made explicit
+
 ## Installation
 
 You can install the development version of ComutR from
@@ -43,8 +51,3 @@ comut(data = input_maf)
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
-
-For more complex examples and explanations of all of ComutR’s features,
-look at the vignette:
-
-[Using Comut](./vignettes/ComutR.html)

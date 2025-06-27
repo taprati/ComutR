@@ -51,7 +51,7 @@ input_maf %>% head()
 comut(data = input_maf)
 ```
 
-By default, comutR provides a colorscheme for the variant classification, but this can be altered using the `variant_colors` and `variant_scheme` arguments.
+By default, comutR provides a colorscheme for the variant classification, but this can be altered using the `variant_colors` and `variant_scheme` arguments. `comut` also orders the rows by frequency of alterations.
 
 # Adding metadata
 
@@ -154,19 +154,21 @@ comut(
   )
 ```
 
-# Limiting samples or features
+# Limiting samples or features and filling missing information
 
-If a subset of samples or features in the input data are desired, the user can specify the `ids` or `features_of_interest` arguments respectively.
+If a subset of samples or features in the input data are desired, the user can specify the `ids` or `features_of_interest` arguments respectively. `comut` will also fill in any ids or features that are not present in the input data. This can be especially useful when one wants to highlight a feature that is not altered in any samples.
 
 ```{r fig.width = 5, fig.height = 5}
 comut(
   data = input_maf,
-  ids = c("1", "3", "4", "7"),
-  features_of_interest = c("gene_A", "gene_B", "gene_E", "gene_H")
+  ids = c("1", "3", "4", "7", "missing_sample"),
+  features_of_interest = c("gene_A", "gene_B", "gene_E", "gene_H", "gene_missing")
   )
 ```
 
 # Comut also provide many arguments for the plot size, fontsize, and other options.
+
+`comut` also takes additional variable arguments for the call to `Heatmap`, so users can specify existing options like `row_names_rot`, etc.
 
 ```{r, fig.width = 10, fig.height = 7}
 comut(
@@ -179,6 +181,9 @@ comut(
   cell_height = 0.3,
   anno_fontsize = 12,
   legend_fontsize = 12,
-  add_borders = TRUE
+  body_border = TRUE,
+  add_borders = TRUE,
+  row_names_rot = 45,
+  column_names_rot = 0
 )
 ```
