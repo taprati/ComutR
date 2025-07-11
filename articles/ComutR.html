@@ -82,7 +82,7 @@ format</a></p>
 <span><span class="va">gene_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>, <span class="st">"F"</span>, <span class="st">"G"</span>, <span class="st">"H"</span><span class="op">)</span></span>
 <span><span class="va">gene_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gene_"</span>, <span class="va">gene_names</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">variant_types</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Missense_Mutation"</span>, <span class="st">"Nonsense_Mutation"</span>, <span class="st">"In_Frame_Del"</span>, <span class="st">"In_Frame_Del"</span>, <span class="st">"Missense_Mutation"</span>, <span class="st">"Nonsense_Mutation"</span>, <span class="st">"Nonsense_Mutation"</span><span class="op">)</span></span>
+<span><span class="va">variant_types</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Frame_Shift_Del"</span>, <span class="st">"Frame_Shift_Ins"</span>, <span class="st">"In_Frame_Del"</span>, <span class="st">"In_Frame_Ins"</span>, <span class="st">"Missense_Mutation"</span>, <span class="st">"Nonsense_Mutation"</span>, <span class="st">"Splice_Site"</span>, <span class="st">"Translation_Start_Site"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">maf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/expand.grid.html" class="external-link">expand.grid</a></span><span class="op">(</span></span>
 <span>  <span class="st">"Tumor_Sample_Barcode"</span> <span class="op">=</span> <span class="va">sample_ids</span>,</span>
@@ -90,18 +90,25 @@ format</a></p>
 <span>  <span class="op">)</span></span>
 <span><span class="va">maf</span><span class="op">$</span><span class="va">Variant_Classification</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="va">variant_types</span>,</span>
 <span>                                     size <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">maf</span><span class="op">)</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span><span class="co"># "Variant_Classification" = variant_types</span></span>
+<span></span>
+<span><span class="co"># Randomly subset</span></span>
 <span><span class="va">input_maf</span> <span class="op">&lt;-</span> <span class="va">maf</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/sample_n.html" class="external-link">sample_frac</a></span><span class="op">(</span><span class="fl">0.35</span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># Duplicate first row twice for showing multiple</span></span>
+<span><span class="va">input_maf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">input_maf</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>,<span class="op">]</span>, <span class="va">input_maf</span><span class="op">)</span></span>
+<span><span class="co"># Duplicate last row once for showing double annotations</span></span>
+<span><span class="va">input_maf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">input_maf</span><span class="op">[</span><span class="fl">4</span>,<span class="op">]</span>, <span class="va">input_maf</span><span class="op">)</span></span>
+<span><span class="va">input_maf</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="st">"Missense_Mutation"</span></span>
+<span></span>
 <span><span class="va">input_maf</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##   Tumor_Sample_Barcode Hugo_Symbol Variant_Classification</span></span>
-<span><span class="co">## 1                    8      gene_B           In_Frame_Del</span></span>
-<span><span class="co">## 2                    8      gene_D           In_Frame_Del</span></span>
-<span><span class="co">## 3                    3      gene_G      Nonsense_Mutation</span></span>
-<span><span class="co">## 4                    7      gene_D           In_Frame_Del</span></span>
-<span><span class="co">## 5                    6      gene_C      Nonsense_Mutation</span></span>
-<span><span class="co">## 6                    3      gene_C           In_Frame_Del</span></span></code></pre>
+<pre><code><span><span class="co">##     Tumor_Sample_Barcode Hugo_Symbol Variant_Classification</span></span>
+<span><span class="co">## 2                      8      gene_A      Missense_Mutation</span></span>
+<span><span class="co">## 1                      7      gene_H           In_Frame_Ins</span></span>
+<span><span class="co">## 1.1                    7      gene_H           In_Frame_Ins</span></span>
+<span><span class="co">## 110                    7      gene_H           In_Frame_Ins</span></span>
+<span><span class="co">## 29                     8      gene_A            Splice_Site</span></span>
+<span><span class="co">## 3                      3      gene_A           In_Frame_Ins</span></span></code></pre>
 </div>
 </div>
 <div class="section level2">
