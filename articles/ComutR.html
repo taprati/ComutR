@@ -273,7 +273,10 @@ This can be used to explicitly show variant not seen in the dataset.</p>
 <h2 id="additional-options">Additional Options<a class="anchor" aria-label="anchor" href="#additional-options"></a>
 </h2>
 <p>Comut also provide many arguments for the plot size, fontsize, and
-other options.</p>
+other options. <code>comut</code> also takes additional variable
+arguments for the call to <code>Heatmap</code>, so users can specify
+existing options like <code>row_names_rot</code>,
+<code>column_names_rot</code>, <code>body_border</code> etc.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/comut.html">comut</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">input_maf</span>,</span>
@@ -287,14 +290,8 @@ other options.</p>
 <span>  legend_fontsize <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  add_borders <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  body_border <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span>  <span class="co"># row_names_rot = 30,</span></span>
-<span>  <span class="co"># column_names_rot = 0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p><img src="ComutR_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
-<p><code>comut</code> also takes additional variable arguments for the
-call to <code>Heatmap</code>, so users can specify existing options like
-<code>row_names_rot</code>, <code>column_names_rot</code>,
-<code>body_border</code> etc.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
