@@ -3,5 +3,8 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   ComutR: ComutR.html
-last_built: 2025-06-27T14:04Z
+last_built: 2025-07-11T16:41Z
+urls:
+  reference: https://taprati.github.io/ComutR/reference
+  article: https://taprati.github.io/ComutR/articles
 

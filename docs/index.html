@@ -59,6 +59,12 @@
 <!-- badges: start -->
 
 <p>Create comut plots in R! Built on top of ComplexHeatmap <a href="https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html" class="external-link">ComplexHeatmap</a> Heavily inspired by the python package comut: <a href="https://pypi.org/project/comut/" class="external-link">comut</a></p>
+<p>Major features include:</p>
+<ul>
+<li>By default in works with <a href="https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/" class="external-link">MAF (Mutation Annotation Format)</a> style input data!</li>
+<li>Ability to add text annotations on top of the boxes</li>
+<li>Allows for missing information to be made explicit</li>
+</ul>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
@@ -72,7 +78,7 @@
 </h2>
 <p>The most basic comut plot takes a maf type data frame and generates a heatmap:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ComutR</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://taprati.github.io/ComutR/">ComutR</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">input_maf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
 <span>  Tumor_Sample_Barcode <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"1"</span>, <span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"4"</span><span class="op">)</span>,</span>
@@ -82,8 +88,6 @@
 <span></span>
 <span><span class="fu"><a href="reference/comut.html">comut</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">input_maf</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-example-1.png" width="100%"></p>
-<p>For more complex examples and explanations of all of ComutR’s features, look at the vignette:</p>
-<p><a href="./vignettes/ComutR.html">Using Comut</a></p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
