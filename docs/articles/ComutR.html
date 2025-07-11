@@ -68,8 +68,7 @@
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://taprati.github.io/ComutR/">ComutR</a></span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1999</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://taprati.github.io/ComutR/">ComutR</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="preparing-data-for-comut-plots">Preparing data for comut plots<a class="anchor" aria-label="anchor" href="#preparing-data-for-comut-plots"></a>
 </h2>
@@ -86,7 +85,9 @@ format</a></p>
 <h3 id="generating-mock-data">Generating mock data<a class="anchor" aria-label="anchor" href="#generating-mock-data"></a>
 </h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sample_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1999</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">sample_ids</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">gene_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>, <span class="st">"F"</span>, <span class="st">"G"</span>, <span class="st">"H"</span><span class="op">)</span></span>
 <span><span class="va">gene_names</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="st">"gene_"</span>, <span class="va">gene_names</span><span class="op">)</span></span>
@@ -255,17 +256,35 @@ to highlight a feature that is not altered in any samples.</p>
 <span>  data <span class="op">=</span> <span class="va">input_maf</span>,</span>
 <span>  ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"7"</span>, <span class="st">"missing_sample"</span><span class="op">)</span>,</span>
 <span>  features_of_interest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gene_A"</span>, <span class="st">"gene_B"</span>, <span class="st">"gene_E"</span>, <span class="st">"gene_H"</span>, <span class="st">"gene_missing"</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="ComutR_files/figure-html/unnamed-chunk-6-1.png" width="480"></p>
+</div>
+<div class="section level2">
+<h2 id="custom-color-schemes">Custom color schemes<a class="anchor" aria-label="anchor" href="#custom-color-schemes"></a>
+</h2>
+<p>By default, <code>comut</code> assigns colors from the <a href="https://loading.io/color/feature/Vivid-11" class="external-link">vivid</a> color scheme
+to the variant classifications in order of frequency. To specify a
+custom color scheme, the <code>variant_colors</code> argument is used.
+This can be used to explicitly show variant not seen in the dataset.</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/comut.html">comut</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">input_maf</span>,</span>
+<span>  ids <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"1"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>, <span class="st">"7"</span>, <span class="st">"missing_sample"</span><span class="op">)</span>,</span>
+<span>  features_of_interest <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"gene_A"</span>, <span class="st">"gene_B"</span>, <span class="st">"gene_E"</span>, <span class="st">"gene_H"</span>, <span class="st">"gene_missing"</span><span class="op">)</span>,</span>
+<span>  variant_colors <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"In_Frame_Ins"</span> <span class="op">=</span> <span class="st">"lightblue"</span>,</span>
+<span>    <span class="st">"Frame_Shift_Ins"</span> <span class="op">=</span> <span class="st">"pink"</span>,</span>
+<span>    <span class="st">"Unseen Variant Class"</span> <span class="op">=</span> <span class="st">"purple"</span>,</span>
+<span>    <span class="st">"In_Frame_Del"</span> <span class="op">=</span> <span class="st">"lightgreen"</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="ComutR_files/figure-html/unnamed-chunk-7-1.png" width="480"></p>
 </div>
 <div class="section level2">
 <h2 id="comut-also-provide-many-arguments-for-the-plot-size-fontsize-and-other-options-">Comut also provide many arguments for the plot size, fontsize, and
 other options.<a class="anchor" aria-label="anchor" href="#comut-also-provide-many-arguments-for-the-plot-size-fontsize-and-other-options-"></a>
 </h2>
-<p><code>comut</code> also takes additional variable arguments for the
-call to <code>Heatmap</code>, so users can specify existing options like
-<code>row_names_rot</code>, etc.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/comut.html">comut</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">input_maf</span>,</span>
 <span>  metadata <span class="op">=</span> <span class="va">meta</span>,</span>
@@ -276,13 +295,17 @@ call to <code>Heatmap</code>, so users can specify existing options like
 <span>  cell_height <span class="op">=</span> <span class="fl">0.3</span>,</span>
 <span>  anno_fontsize <span class="op">=</span> <span class="fl">12</span>,</span>
 <span>  legend_fontsize <span class="op">=</span> <span class="fl">12</span>,</span>
-<span>  body_border <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  add_borders <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  row_names_rot <span class="op">=</span> <span class="fl">45</span>,</span>
-<span>  column_names_rot <span class="op">=</span> <span class="fl">0</span></span>
+<span>  <span class="co"># body_border = TRUE,</span></span>
+<span>  <span class="co"># row_names_rot = 30,</span></span>
+<span>  <span class="co"># column_names_rot = 0</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Warning: Following annotation names are duplicated: value</span></span></code></pre>
-<p><img src="ComutR_files/figure-html/unnamed-chunk-7-1.png" width="960"></p>
+<p><img src="ComutR_files/figure-html/unnamed-chunk-8-1.png" width="960"></p>
+<p><code>comut</code> also takes additional variable arguments for the
+call to <code>Heatmap</code>, so users can specify existing options like
+<code>row_names_rot</code>, <code>column_names_rot</code>,
+<code>body_border</code> etc.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

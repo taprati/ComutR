@@ -75,7 +75,6 @@ barplot_data <- list(
 
 # Test
 test_that("Comut plots generate", {
-          expect_warning(
             comut(
               data = input_maf,
               metadata = meta,
@@ -86,22 +85,20 @@ test_that("Comut plots generate", {
               cell_height = 0.5,
               cell_width = 0.25,
               barplot_data = barplot_data
-            ), "Following annotation names are duplicated: value")
+            )
           })
 
 test_that("Comut plots reorder", {
-          expect_warning(
             comut(
               data = input_maf,
               metadata = meta,
               col_maps = color_maps,
               id_order = c("1", "2", "3", "4"),
               barplot_data = barplot_data
-            ), "Following annotation names are duplicated: value")
+            )
           })
 
 test_that("Comut plots reorder", {
-          expect_warning(
             comut(
               data = input_maf,
               metadata = meta,
@@ -114,5 +111,5 @@ test_that("Comut plots reorder", {
               show_barcodes = FALSE,
               add_borders = TRUE,
               barplot_data = barplot_data
-            ), "Following annotation names are duplicated: value")
+            )
           })

@@ -4,5 +4,5 @@
 .httr-oauth
 .DS_Store
 .quarto
-inst/doc
+# inst/doc
 # docs

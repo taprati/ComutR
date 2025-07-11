@@ -8,7 +8,6 @@ comut(
   data,
   metadata,
   variant_colors,
-  variant_scheme,
   show_variant_legend = TRUE,
   col_maps,
   features_of_interest,
@@ -38,8 +37,6 @@ comut(
 \item{metadata}{df with Tumor_Sample_Barcode, and metadata columns}
 
 \item{variant_colors}{colorscheme for alteration types, named list}
-
-\item{variant_scheme}{naming scheme to convert alteration types. If provided should match variant_colors names}
 
 \item{show_variant_legend}{whether the legend of variant types should be include. Default is TRUE.}
 

@@ -9,7 +9,6 @@ vignette: >
 
 ```{r setup}
 library(ComutR)
-set.seed(1999)
 ```
 
 # Preparing data for comut plots
@@ -25,6 +24,8 @@ For more information on the maf format and column names, visit [maf format](http
 ## Generating mock data
 
 ```{r Creating data}
+set.seed(1999)
+
 sample_ids <- as.character(1:10)
 
 gene_names <- c("A", "B", "C", "D", "E", "F", "G", "H")
@@ -170,12 +171,30 @@ comut(
   data = input_maf,
   ids = c("1", "3", "4", "7", "missing_sample"),
   features_of_interest = c("gene_A", "gene_B", "gene_E", "gene_H", "gene_missing")
-  )
+)
 ```
 
-# Comut also provide many arguments for the plot size, fontsize, and other options.
+# Color schemes
 
-`comut` also takes additional variable arguments for the call to `Heatmap`, so users can specify existing options like `row_names_rot`, etc.
+By default, `comut` assigns colors from the [vivid](https://loading.io/color/feature/Vivid-11) color scheme to the variant classifications in order of frequency. To specify a custom color scheme, the `variant_colors` argument is used. This can be used to explicitly show variant not seen in the dataset.
+
+```{r fig.width = 5, fig.height = 5}
+comut(
+  data = input_maf,
+  ids = c("1", "3", "4", "7", "missing_sample"),
+  features_of_interest = c("gene_A", "gene_B", "gene_E", "gene_H", "gene_missing"),
+  variant_colors = c(
+    "In_Frame_Ins" = "lightblue",
+    "Frame_Shift_Ins" = "pink",
+    "Unseen Variant Class" = "purple",
+    "In_Frame_Del" = "lightgreen"
+  )
+)
+```
+
+# Additional Options
+
+Comut also provide many arguments for the plot size, fontsize, and other options. `comut` also takes additional variable arguments for the call to `Heatmap`, so users can specify existing options like `row_names_rot`, `column_names_rot`, `body_border` etc.
 
 ```{r, fig.width = 10, fig.height = 7}
 comut(
@@ -188,9 +207,7 @@ comut(
   cell_height = 0.3,
   anno_fontsize = 12,
   legend_fontsize = 12,
-  body_border = TRUE,
   add_borders = TRUE,
-  row_names_rot = 45,
-  column_names_rot = 0
+  body_border = TRUE
 )
 ```

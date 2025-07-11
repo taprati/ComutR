@@ -3,7 +3,6 @@
 #' @param data df with Tumor_Sample_Barcode, Hugo_Symbol, Variant_Classification, and optional column for text annotations
 #' @param metadata df with Tumor_Sample_Barcode, and metadata columns
 #' @param variant_colors colorscheme for alteration types, named list
-#' @param variant_scheme naming scheme to convert alteration types. If provided should match variant_colors names
 #' @param show_variant_legend whether the legend of variant types should be include. Default is TRUE.
 #' @param col_maps named list of color maps. Names should match columns of metadata
 #' @param features_of_interest optional vector of genes of interest
@@ -45,7 +44,6 @@ comut <-
   function(data,
            metadata,
            variant_colors,
-           variant_scheme,
            show_variant_legend = TRUE,
            col_maps,
            features_of_interest,
@@ -137,59 +135,27 @@ comut <-
       mutation_dummy_matrix <- NULL
     }
 
-    # Set variant color map and naming scheme depending on params
-    if (missing(variant_colors) & missing(variant_scheme)) {
+    # Set variant color map or check provided one
+    # By default assigns colors in order of variant frequency
+    if (missing(variant_colors)) {
+      colors <- c("#24796c", "#e58606", "#5d69b1", "#52bca3", "#99c945",
+                  "#cc61b0", "#daa51b", "#2f8ac4", "#764e9f", "#ed645a",
+                  "#cc3a8e")
+      var_class_values <- names(sort(table(filtered_data[["Variant_Classification"]]), decreasing = TRUE))
 
-      # Specify variant naming and colors
-      variant_scheme <- c(
-        "Frame_Shift_Del" = "Frameshift Indel",
-        "Frame_Shift_Ins" = "Frameshift Indel",
-        "In_Frame_Del" = "In Frame Indel",
-        "In_Frame_Ins" = "In Frame Indel",
-        "Missense_Mutation" = "Missense",
-        "Nonsense_Mutation" = "Nonsense",
-        "Splice_Site" = "Splice Site",
-        "Translation_Start_Site" = "Start Site"
-      )
-
-      # Get values found in data to subset the legend
-      var_class_values <- unique(filtered_data[["Variant_Classification"]])
-      variant_scheme <- variant_scheme[var_class_values]
-
-      variant_colors <-  c(
-        "Nonsense" = "#E58606",
-        "In Frame Indel" = "#5D69B1",
-        "Frameshift Indel" = "#CC61B0",
-        "Missense" = "#24796C",
-        "Start Site" = "#DAA51B",
-        "Splice Site" = "#ED645A",
-        "Multiple" = "#A5AA99"
-      )
-      # Check for more than 2 alts in a gene/sample and add appropriately
-      isMult <- (filtered_data %>% dplyr::count(Tumor_Sample_Barcode, Hugo_Symbol) %>%
-        dplyr::filter(n > 2) %>% nrow()) != 0
-      if (isMult) {
-        variant_colors <- variant_colors[unique(c(unname(variant_scheme), "Multiple"))]
-      } else {
-        variant_colors <- variant_colors[unique(unname(variant_scheme))]
+      if (length(var_class_values) > length(colors)) {
+        stop("More variants than colors! Custom variant_colors needed!")
       }
-    } else if (!missing(variant_colors) & missing(variant_scheme)) {
-      variant_colors <- variant_colors
-      variant_scheme <- NULL
-    } else if (missing(variant_colors) & !missing(variant_scheme)) {
-      stop("The variant_scheme needs variant_colors!")
+      variant_colors <- setNames(colors[1:length(var_class_values)], var_class_values)
     } else {
-      # TODO: Check color schemes if provides are good
-      variant_colors <- variant_colors
-      variant_scheme <- variant_scheme
+      var_class_values <- names(sort(table(filtered_data[["Variant_Classification"]]), decreasing = TRUE))
+      if (!all(var_class_values %in% names(variant_colors))) {
+        stop("Provided variant_colors does not contain every variant classification!")
+      }
     }
-
-    # If variant scheme is needed, apply it
-    # (only when default or given, not when only colors given)
-    if (!is.null(variant_scheme)) {
-      filtered_data <- filtered_data %>%
-        dplyr::filter(Variant_Classification %in% names(variant_scheme)) %>%
-        dplyr::mutate(Variant_Classification = as.character(variant_scheme[.$Variant_Classification]))
+    # Add a color for multiple variants if needed
+    if (any(table(filtered_data[c("Tumor_Sample_Barcode", "Variant_Classification")]) > 2)) {
+      variant_colors["Multiple"] <- "#a5aa99"
     }
 
     # Create dummy columns for ids with no alterations in genes
@@ -300,6 +266,7 @@ comut <-
       dat <- barplot_data[[feature]][["data"]]
 
       bar_anno <- ComplexHeatmap::HeatmapAnnotation(
+        name = feature,
         value = ComplexHeatmap::anno_barplot(
           dat,
           bar_width = 1,
@@ -318,8 +285,10 @@ comut <-
         border = FALSE,
         show_legend = FALSE
       )
+
       # Add barplots to annotation list
-      all_annotations <- c(bar_anno, all_annotations)
+      # Warning is suppressed because annotations have the same name, but this is ok
+      all_annotations <- suppressWarnings(c(bar_anno, all_annotations))
       if (barplot_data[[feature]][["legend"]]) {
         bar_lgd <- ComplexHeatmap::Legend(
           labels = names(barplot_data[[feature]][["colors"]]),
@@ -328,10 +297,8 @@ comut <-
           grid_height = grid::unit(0.5, "cm"),
           legend_gp = grid::gpar(fill = barplot_data[[feature]][["colors"]],
                            fontsize = legend_fontsize),
-          labels_gp = grid::gpar(fill = variant_colors,
-                                 fontsize = legend_fontsize),
-          title_gp = grid::gpar(fill = variant_colors,
-                                fontsize = legend_fontsize, fontface = "bold")
+          labels_gp = grid::gpar(fontsize = legend_fontsize),
+          title_gp = grid::gpar(fontsize = legend_fontsize, fontface = "bold")
         )
         all_lgds[[feature]] <- bar_lgd
       }
@@ -402,10 +369,8 @@ comut <-
             grid_width = grid::unit(0.5, "cm"),
             grid_height = grid::unit(0.5, "cm"),
             legend_gp = grid::gpar(fill = col_maps[[feature]], fontsize = legend_fontsize),
-            labels_gp = grid::gpar(fill = variant_colors,
-                                   fontsize = legend_fontsize),
-            title_gp = grid::gpar(fill = variant_colors,
-                                  fontsize = legend_fontsize, fontface = "bold")
+            labels_gp = grid::gpar(fontsize = legend_fontsize),
+            title_gp = grid::gpar(fontsize = legend_fontsize, fontface = "bold")
           )
       }
     }
@@ -415,6 +380,7 @@ comut <-
       all_lgds[["Alteration Type"]] <- ComplexHeatmap::Legend(
         labels = names(variant_colors),
         title = "Alteration Type",
+        # by_row = FALSE,
         grid_width = grid::unit(0.5, "cm"),
         grid_height = grid::unit(0.5, "cm"),
         legend_gp = grid::gpar(fill = variant_colors, fontsize = legend_fontsize),
@@ -526,6 +492,7 @@ comut <-
       return(p)
     } else {
       ComplexHeatmap::draw(comut,
+                           padding = grid::unit(0, "mm"),
                            annotation_legend_side = legend_side,
                            annotation_legend_list = all_lgds)
     }
