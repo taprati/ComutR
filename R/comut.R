@@ -1,4 +1,3 @@
-
 #' Comut Plot
 #'
 #' @param data df with Tumor_Sample_Barcode, Hugo_Symbol, Variant_Classification, and optional column for text annotations
@@ -268,6 +267,62 @@ comut <-
       sort(decreasing = TRUE) %>%
       names()
 
+    # Initialize lists for legends and annotations
+    all_annotations <- NULL
+    all_lgds <- list()
+
+    ### Build barplots
+    # Filter barplot data to patients of interest and match orders
+    for (b in names(barplot_data)) {
+      barplot_data[[b]][["data"]] <- barplot_data[[b]][["data"]] %>%
+        dplyr::filter(Tumor_Sample_Barcode %in% ids) %>%
+        dplyr::arrange(match(Tumor_Sample_Barcode,
+                      colnames(alteration_matrix))) %>%
+        tibble::column_to_rownames(var = "Tumor_Sample_Barcode")
+    }
+    # Make heatmap barplots
+    for (feature in names(barplot_data)) {
+      dat <- barplot_data[[feature]][["data"]]
+
+      bar_anno <- ComplexHeatmap::HeatmapAnnotation(
+        value = ComplexHeatmap::anno_barplot(
+          dat,
+          bar_width = 1,
+          border = FALSE,
+          gp = grid::gpar(fill = barplot_data[[feature]][["colors"]][colnames(dat)],
+                    fontsize = anno_fontsize,
+                    col = "white")
+        ),
+        # Split multi-word labels across lines
+        annotation_label = paste(stringr::str_replace(feature, " ", "\n")),
+        annotation_name_gp = grid::gpar(fontsize = anno_fontsize),
+        annotation_height = grid::unit(0.75, "inches"),
+        gp = grid::gpar(fontsize = anno_fontsize, col = "white"),
+        which = "column",
+        annotation_name_side = "left",
+        border = FALSE,
+        show_legend = FALSE
+      )
+      # Add barplots to annotation list
+      all_annotations <- c(bar_anno, all_annotations)
+      if (barplot_data[[feature]][["legend"]]) {
+        bar_lgd <- ComplexHeatmap::Legend(
+          labels = names(barplot_data[[feature]][["colors"]]),
+          title = paste(feature),
+          grid_width = grid::unit(0.5, "cm"),
+          grid_height = grid::unit(0.5, "cm"),
+          legend_gp = grid::gpar(fill = barplot_data[[feature]][["colors"]],
+                           fontsize = legend_fontsize),
+          labels_gp = grid::gpar(fill = variant_colors,
+                                 fontsize = legend_fontsize),
+          title_gp = grid::gpar(fill = variant_colors,
+                                fontsize = legend_fontsize, fontface = "bold")
+        )
+        all_lgds[[feature]] <- bar_lgd
+      }
+    }
+
+    ### Metadata annotations
     # Filter metadata and format
     if (!is.null(metadata)) {
       # Create placeholder metadata for missing patients
@@ -316,8 +371,11 @@ comut <-
           gap = grid::unit(2, "points"),
           show_legend = FALSE
         )
-      all_annotations <- c(meta_anno)
-      all_lgds <- list()
+      if (is.null(all_annotations)) { # If no barplot annotations, the data types will cause errors
+        all_annotations <- meta_anno
+      } else {
+        all_annotations <- c(all_annotations, meta_anno)
+      }
 
       # Create legends
       features <- colnames(annodata)
@@ -334,60 +392,6 @@ comut <-
             title_gp = grid::gpar(fill = variant_colors,
                                   fontsize = legend_fontsize, fontface = "bold")
           )
-      }
-    } else { # If not metadata is given
-      all_annotations <- NULL
-      all_lgds <- NULL
-    }
-
-    # Build barplots
-    # Filter barplot data to patients of interest and match orders
-    for (b in names(barplot_data)) {
-      barplot_data[[b]][["data"]] <- barplot_data[[b]][["data"]] %>%
-        dplyr::filter(Tumor_Sample_Barcode %in% ids) %>%
-        dplyr::arrange(match(Tumor_Sample_Barcode,
-                      colnames(alteration_matrix))) %>%
-        tibble::column_to_rownames(var = "Tumor_Sample_Barcode")
-    }
-    # Make heatmap barplots
-    for (feature in names(barplot_data)) {
-      dat <- barplot_data[[feature]][["data"]]
-
-      bar_anno <- ComplexHeatmap::HeatmapAnnotation(
-        value = ComplexHeatmap::anno_barplot(
-          dat,
-          bar_width = 1,
-          border = FALSE,
-          gp = grid::gpar(fill = barplot_data[[feature]][["colors"]][colnames(dat)],
-                    fontsize = anno_fontsize,
-                    col = "white")
-        ),
-        # Split multi-word labels across lines
-        annotation_label = paste(stringr::str_replace(feature, " ", "\n")),
-        annotation_name_gp = grid::gpar(fontsize = anno_fontsize),
-        annotation_height = grid::unit(0.75, "inches"),
-        gp = grid::gpar(fontsize = anno_fontsize, col = "white"),
-        which = "column",
-        annotation_name_side = "left",
-        border = FALSE,
-        show_legend = FALSE
-      )
-      # Add barplots to annotation list
-      all_annotations <- c(bar_anno, all_annotations)
-      if (barplot_data[[feature]][["legend"]]) {
-        bar_lgd <- ComplexHeatmap::Legend(
-          labels = names(barplot_data[[feature]][["colors"]]),
-          title = paste(feature),
-          grid_width = grid::unit(0.5, "cm"),
-          grid_height = grid::unit(0.5, "cm"),
-          legend_gp = grid::gpar(fill = barplot_data[[feature]][["colors"]],
-                           fontsize = legend_fontsize),
-          labels_gp = grid::gpar(fill = variant_colors,
-                                 fontsize = legend_fontsize),
-          title_gp = grid::gpar(fill = variant_colors,
-                                fontsize = legend_fontsize, fontface = "bold")
-        )
-        all_lgds[[feature]] <- bar_lgd
       }
     }
 
