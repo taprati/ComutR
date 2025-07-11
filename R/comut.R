@@ -106,50 +106,10 @@ comut <-
         stop("Some metadata features are not in the color maps!")
       }
     }
-    # Set variant color map and naming scheme depending on params
-    if (missing(variant_colors) & missing(variant_scheme)) {
-      variant_colors <-  c(
-        "Nonsense" = "#E58606",
-        "In Frame Indel" = "#5D69B1",
-        "Frameshift Indel" = "#CC61B0",
-        "Missense" = "#24796C",
-        "Start Site" = "#DAA51B",
-        "Splice Site" = "#ED645A",
-        "Multiple" = "#A5AA99"
-      )
-      # Specify variant naming and colors
-      variant_scheme <- c(
-        "Frame_Shift_Del" = "Frameshift Indel",
-        "Frame_Shift_Ins" = "Frameshift Indel",
-        "In_Frame_Del" = "In Frame Indel",
-        "In_Frame_Ins" = "In Frame Indel",
-        "Missense_Mutation" = "Missense",
-        "Nonsense_Mutation" = "Nonsense",
-        "Splice_Site" = "Splice Site",
-        "Translation_Start_Site" = "Start Site"
-      )
-    } else if (!missing(variant_colors) & missing(variant_scheme)) {
-      variant_colors <- variant_colors
-      variant_scheme <- NULL
-    } else if (missing(variant_colors) & !missing(variant_scheme)) {
-      stop("The variant_scheme needs variant_colors!")
-    } else {
-      # TODO: Check color schemes if provides are good
-      variant_colors <- variant_colors
-      variant_scheme <- variant_scheme
-    }
 
     # Filter the data to patients of interest, and format alterations
     filtered_data <- data %>%
       dplyr::filter(Tumor_Sample_Barcode %in% ids)
-
-    # If variant scheme is needed, apply it
-    # (only when default or given, not when only colors given)
-    if (!is.null(variant_scheme)) {
-      filtered_data <- filtered_data %>%
-        dplyr::filter(Variant_Classification %in% names(variant_scheme)) %>%
-        dplyr::mutate(Variant_Classification = as.character(variant_scheme[.$Variant_Classification]))
-    }
 
     # Filter to features of interest if needed
     if (!is.null(features_of_interest)) {
@@ -175,6 +135,61 @@ comut <-
     } else {
       dummy_matrix <- NULL
       mutation_dummy_matrix <- NULL
+    }
+
+    # Set variant color map and naming scheme depending on params
+    if (missing(variant_colors) & missing(variant_scheme)) {
+
+      # Specify variant naming and colors
+      variant_scheme <- c(
+        "Frame_Shift_Del" = "Frameshift Indel",
+        "Frame_Shift_Ins" = "Frameshift Indel",
+        "In_Frame_Del" = "In Frame Indel",
+        "In_Frame_Ins" = "In Frame Indel",
+        "Missense_Mutation" = "Missense",
+        "Nonsense_Mutation" = "Nonsense",
+        "Splice_Site" = "Splice Site",
+        "Translation_Start_Site" = "Start Site"
+      )
+
+      # Get values found in data to subset the legend
+      var_class_values <- unique(filtered_data[["Variant_Classification"]])
+      variant_scheme <- variant_scheme[var_class_values]
+
+      variant_colors <-  c(
+        "Nonsense" = "#E58606",
+        "In Frame Indel" = "#5D69B1",
+        "Frameshift Indel" = "#CC61B0",
+        "Missense" = "#24796C",
+        "Start Site" = "#DAA51B",
+        "Splice Site" = "#ED645A",
+        "Multiple" = "#A5AA99"
+      )
+      # Check for more than 2 alts in a gene/sample and add appropriately
+      isMult <- (filtered_data %>% dplyr::count(Tumor_Sample_Barcode, Hugo_Symbol) %>%
+        dplyr::filter(n > 2) %>% nrow()) != 0
+      if (isMult) {
+        variant_colors <- variant_colors[c(unname(variant_scheme), "Multiple")]
+      } else {
+        variant_colors <- variant_colors[unname(variant_scheme)]
+      }
+    } else if (!missing(variant_colors) & missing(variant_scheme)) {
+      variant_colors <- variant_colors
+      variant_scheme <- NULL
+    } else if (missing(variant_colors) & !missing(variant_scheme)) {
+      stop("The variant_scheme needs variant_colors!")
+    } else {
+      # TODO: Check color schemes if provides are good
+      variant_colors <- variant_colors
+      variant_scheme <- variant_scheme
+    }
+
+    # If variant scheme is needed, apply it
+    # (only when default or given, not when only colors given)
+    if (!is.null(variant_scheme)) {
+      filtered_data <- filtered_data %>%
+        dplyr::filter(Variant_Classification %in% names(variant_scheme)) %>%
+        dplyr::mutate(Variant_Classification = as.character(variant_scheme[.$Variant_Classification]))
     }
 
     # Create dummy columns for ids with no alterations in genes
