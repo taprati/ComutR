@@ -169,9 +169,9 @@ comut <-
       isMult <- (filtered_data %>% dplyr::count(Tumor_Sample_Barcode, Hugo_Symbol) %>%
         dplyr::filter(n > 2) %>% nrow()) != 0
       if (isMult) {
-        variant_colors <- variant_colors[c(unname(variant_scheme), "Multiple")]
+        variant_colors <- variant_colors[unique(c(unname(variant_scheme), "Multiple"))]
       } else {
-        variant_colors <- variant_colors[unname(variant_scheme)]
+        variant_colors <- variant_colors[unique(unname(variant_scheme))]
       }
     } else if (!missing(variant_colors) & missing(variant_scheme)) {
       variant_colors <- variant_colors
