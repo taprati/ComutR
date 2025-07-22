@@ -46,9 +46,9 @@ comut(
 
 \item{text_annotation}{How to annotate comut plot squares if desired, must be a column in data}
 
-\item{text_annotation_col}{Size of text annotations, default is 8.}
+\item{text_annotation_col}{Color of text annotations, default is white.}
 
-\item{text_annotation_size}{Color of text annotations, default is white.}
+\item{text_annotation_size}{Size of text annotations, default is 8.}
 
 \item{barplot_data}{named list of named lists. Each sub list should contain data, colors, and legend params for plots}
 

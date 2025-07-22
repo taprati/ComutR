@@ -7,8 +7,8 @@
 #' @param col_maps named list of color maps. Names should match columns of metadata
 #' @param features_of_interest optional vector of genes of interest
 #' @param text_annotation How to annotate comut plot squares if desired, must be a column in data
-#' @param text_annotation_col Size of text annotations, default is 8.
-#' @param text_annotation_size Color of text annotations, default is white.
+#' @param text_annotation_size Size of text annotations, default is 8.
+#' @param text_annotation_col Color of text annotations, default is white.
 #' @param barplot_data named list of named lists. Each sub list should contain data, colors, and legend params for plots
 #' @param grob whether to return grob object instead of plotting. Useful for other frameworks.
 #' @param body_width width of the heatmap body in inches.
@@ -280,15 +280,16 @@ comut <-
         annotation_name_gp = grid::gpar(fontsize = anno_fontsize),
         annotation_height = grid::unit(0.75, "inches"),
         gp = grid::gpar(fontsize = anno_fontsize, col = "white"),
+        # gap = grid::unit(5, "mm"),
         which = "column",
         annotation_name_side = "left",
         border = FALSE,
         show_legend = FALSE
       )
-
+      # Rename the annotation to avoid collisions
+      names(bar_anno) <- feature
       # Add barplots to annotation list
-      # Warning is suppressed because annotations have the same name, but this is ok
-      all_annotations <- suppressWarnings(c(bar_anno, all_annotations))
+      all_annotations <- c(bar_anno, all_annotations)
       if (barplot_data[[feature]][["legend"]]) {
         bar_lgd <- ComplexHeatmap::Legend(
           labels = names(barplot_data[[feature]][["colors"]]),
@@ -302,6 +303,13 @@ comut <-
         )
         all_lgds[[feature]] <- bar_lgd
       }
+    }
+    # Reverse legends to match annotation ordering visually
+    all_lgds <- rev(all_lgds)
+
+    # Add gap between bar annotations
+    if (!is.null(all_annotations)) {
+      all_annotations@gap = grid::unit(rep(2, length(all_annotations)), "mm")
     }
 
     ### Metadata annotations
@@ -398,6 +406,14 @@ comut <-
       body_height = grid::unit(body_height, "inches")
     }
 
+    # Hack to set the base colormap
+    # If the variants are homogeneous, the colormap needs to be a single item
+    if (length(unique(as.vector(alteration_matrix))) == 1) {
+      col <- c("white")
+    } else {
+      col <- c("white", "white")
+    }
+
     # Create heatmap
     comut <- ComplexHeatmap::Heatmap(
       matrix = alteration_matrix,
@@ -413,7 +429,7 @@ comut <-
       row_names_side = "left",
       row_order = heatmap_gene_order,
       column_order = id_order,
-      col = c("white", "white"),
+      col = col,
       cell_fun = function(j, i, x, y, width, height, fill) {
         if (alteration_matrix[i, j] != 0) {
           alteration <- sort(stringr::str_split_1(variant_matrix[i, j], ";"))
@@ -492,7 +508,6 @@ comut <-
       return(p)
     } else {
       ComplexHeatmap::draw(comut,
-                           padding = grid::unit(0, "mm"),
                            annotation_legend_side = legend_side,
                            annotation_legend_list = all_lgds)
     }
