@@ -18,6 +18,7 @@
 #' @param cell_height height of the heatmap cells. Also applies to annotations.
 #' @param legend_side side of heatmap to put the legend on. Default is right
 #' @param legend_fontsize Font size for legends. Default is 10
+#' @param bar_anno_height Height of each barplot annotation in inches.
 #' @param anno_fontsize Font size for annotations. Default is 8
 #' @param add_borders whether padding should be added around each box in the comut body.
 #' @param show_barcodes whether the sample ids should be shown in the plot
@@ -59,6 +60,7 @@ comut <-
            cell_width = 0.25,
            legend_side = "right",
            legend_fontsize = 10,
+           bar_anno_height = 0.75,
            anno_fontsize = 8,
            add_borders = FALSE,
            show_barcodes = TRUE,
@@ -278,9 +280,8 @@ comut <-
         # Split multi-word labels across lines
         annotation_label = paste(stringr::str_replace(feature, " ", "\n")),
         annotation_name_gp = grid::gpar(fontsize = anno_fontsize),
-        annotation_height = grid::unit(0.75, "inches"),
+        annotation_height = grid::unit(bar_anno_height, "inches"),
         gp = grid::gpar(fontsize = anno_fontsize, col = "white"),
-        # gap = grid::unit(5, "mm"),
         which = "column",
         annotation_name_side = "left",
         border = FALSE,

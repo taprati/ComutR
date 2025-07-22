@@ -23,6 +23,7 @@ comut(
   cell_width = 0.25,
   legend_side = "right",
   legend_fontsize = 10,
+  bar_anno_height = 0.75,
   anno_fontsize = 8,
   add_borders = FALSE,
   show_barcodes = TRUE,
@@ -67,6 +68,8 @@ comut(
 \item{legend_side}{side of heatmap to put the legend on. Default is right}
 
 \item{legend_fontsize}{Font size for legends. Default is 10}
+
+\item{bar_anno_height}{Height of each barplot annotation in inches.}
 
 \item{anno_fontsize}{Font size for annotations. Default is 8}
 
