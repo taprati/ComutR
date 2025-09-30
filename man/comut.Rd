@@ -25,6 +25,8 @@ comut(
   legend_fontsize = 10,
   bar_anno_height = 0.75,
   anno_fontsize = 8,
+  row_fontsize = 10,
+  col_fontsize = 10,
   add_borders = FALSE,
   show_barcodes = TRUE,
   id_order,
@@ -72,6 +74,10 @@ comut(
 \item{bar_anno_height}{Height of each barplot annotation in inches.}
 
 \item{anno_fontsize}{Font size for annotations. Default is 8}
+
+\item{row_fontsize}{Font size for row labels. Default is 10}
+
+\item{col_fontsize}{Font size for column labels. Default is 10}
 
 \item{add_borders}{whether padding should be added around each box in the comut body.}
 

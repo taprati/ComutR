@@ -20,6 +20,8 @@
 #' @param legend_fontsize Font size for legends. Default is 10
 #' @param bar_anno_height Height of each barplot annotation in inches.
 #' @param anno_fontsize Font size for annotations. Default is 8
+#' @param row_fontsize Font size for row labels. Default is 10
+#' @param col_fontsize Font size for column labels. Default is 10
 #' @param add_borders whether padding should be added around each box in the comut body.
 #' @param show_barcodes whether the sample ids should be shown in the plot
 #' @param ids optional vector of Tumor_Sample_Barcodes to show
@@ -62,6 +64,8 @@ comut <-
            legend_fontsize = 10,
            bar_anno_height = 0.75,
            anno_fontsize = 8,
+           row_fontsize = 10,
+           col_fontsize = 10,
            add_borders = FALSE,
            show_barcodes = TRUE,
            id_order,
@@ -425,8 +429,8 @@ comut <-
       width = body_width,
       height = body_height,
       border = body_border,
-      column_names_gp = grid::gpar(fontsize = 10),
-      row_names_gp = grid::gpar(fontsize = 10),
+      column_names_gp = grid::gpar(fontsize = col_fontsize),
+      row_names_gp = grid::gpar(fontsize = row_fontsize),
       row_names_side = "left",
       row_order = heatmap_gene_order,
       column_order = id_order,
