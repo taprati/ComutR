@@ -46,8 +46,9 @@ Further customization, including integrating metadata, can be used to
 generate complex figures as seen in this
 [manuscript](https://onlinelibrary.wiley.com/doi/full/10.1002/cam4.71410):
 
-[Complex Comut
-Plot](https://taprati.github.io/ComutR/man/figures/full_comut_example.png)
+![Complex Comut Plot](reference/figures/full_comut_example.png)
+
+Complex Comut Plot
 
 # Package index
 
