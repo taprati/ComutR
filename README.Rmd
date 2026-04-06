@@ -16,19 +16,18 @@ knitr::opts_chunk$set(
 # ComutR
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml)
-[![Codecov test coverage](https://codecov.io/gh/taprati/ComutR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/taprati/ComutR?branch=main)
+
+[![R-CMD-check](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml) [![Codecov test coverage](https://codecov.io/gh/taprati/ComutR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/taprati/ComutR?branch=main)
+
 <!-- badges: end -->
 
-Create comut plots in R!
-Built on top of ComplexHeatmap [ComplexHeatmap](https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html)
-Heavily inspired by the python package comut: [comut](https://pypi.org/project/comut/)
+Create comut plots in R! Built on top of ComplexHeatmap [ComplexHeatmap](https://bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html) Heavily inspired by the python package comut: [comut](https://pypi.org/project/comut/)
 
 Major features include:
 
-* By default in works with [MAF (Mutation Annotation Format)](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) style input data!
-* Ability to add text annotations on top of the boxes
-* Allows for missing information to be made explicit
+-   By default in works with [MAF (Mutation Annotation Format)](https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/) style input data!
+-   Ability to add text annotations on top of the boxes
+-   Allows for missing information to be made explicit
 
 ## Installation
 
@@ -39,11 +38,11 @@ You can install the development version of ComutR from [GitHub](https://github.c
 devtools::install_github("taprati/ComutR")
 ```
 
-## Example
+## Examples
 
 The most basic comut plot takes a maf type data frame and generates a heatmap:
 
-```{r example}
+```{r example, fig.width=3, fig.height=1.5, dpi=200}
 library(ComutR)
 
 input_maf <- data.frame(
@@ -54,3 +53,7 @@ input_maf <- data.frame(
 
 comut(data = input_maf)
 ```
+
+Further customization, including integrating metadata, can be used to generate complex figures as seen in this [manuscript](https://onlinelibrary.wiley.com/doi/full/10.1002/cam4.71410):
+
+![Complex Comut Plot](man/figures/full_comut_example.png)

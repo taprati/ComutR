@@ -8,6 +8,7 @@
 [![R-CMD-check](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/taprati/ComutR/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/taprati/ComutR/branch/main/graph/badge.svg)](https://app.codecov.io/gh/taprati/ComutR?branch=main)
+
 <!-- badges: end -->
 
 Create comut plots in R! Built on top of ComplexHeatmap
@@ -33,7 +34,7 @@ You can install the development version of ComutR from
 devtools::install_github("taprati/ComutR")
 ```
 
-## Example
+## Examples
 
 The most basic comut plot takes a maf type data frame and generates a
 heatmap:
@@ -51,3 +52,13 @@ comut(data = input_maf)
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
+
+Further customization, including integrating metadata, can be used to
+generate complex figures as seen in this
+[manuscript](https://onlinelibrary.wiley.com/doi/full/10.1002/cam4.71410):
+
+<figure>
+<img src="man/figures/full_comut_example.png"
+alt="Complex Comut Plot" />
+<figcaption aria-hidden="true">Complex Comut Plot</figcaption>
+</figure>
